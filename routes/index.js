@@ -2,10 +2,12 @@ var express = require('express');
 var router = express.Router();
 const bookRoute = require("./add-book");
 const userRoute = require("./user.route");
+const connection = require("../server");
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+router.get('/', async function (req, res, next) {
+  res.render('index', { title: 'Library Management System'});
+  //I want to add book comments on this page
 });
 
 router.use('/books', bookRoute);

@@ -7,17 +7,47 @@ module.exports = {
             console.log(body);
             const tableName = 'books_borrowed';
             const borrower = await dbHelper.create(connection, tableName, body, next);
+    
+            // Update book status in the books table
+            await module.exports.updateBookStatus(body.book_id, 'Checked Out');
+    
             return borrower;
         } catch (err) {
             console.error('Error creating borrower:', err);
             throw err;
         }
     },
+    updateBookStatus: async (book_id, status) => {
+        const sql = `UPDATE books SET book_status = ${connection.escape(status)} WHERE book_id = ${connection.escape(book_id)}`;
+        try {
+            const result = await new Promise((resolve, reject) => {
+                connection.query(sql, (err, rows) => {
+                    if (err) reject(err);
+                    else resolve(rows);
+                });
+            });
+            return result;
+        } catch (err) {
+            throw err;
+        }
+    },
+    // borrowBook: async (body, next) => {
+    //     try {
+    //         console.log(body);
+    //         const tableName = 'books_borrowed';
+    //         const borrower = await dbHelper.create(connection, tableName, body, next);
+    //         return borrower;
+    //     } catch (err) {
+    //         console.error('Error creating borrower:', err);
+    //         throw err;
+    //     }
+    // },
     findBorrowedBookById: async (userId, book_id, next) => {
         try {
             const tableName = 'books_borrowed';
-            const filter = { user_id: userId, book_id: book_id }; // Correctly specify column names
-            const borrowedBook = await dbHelper.findOne(connection, tableName, filter);
+            const filter = { user_id: userId, book_id: book_id };
+            const options = { populate: 'books' } 
+            const borrowedBook = await dbHelper.findOne(connection, tableName, filter, options);
     
             console.log(`Borrowed book found:`, borrowedBook); // Log borrowedBook for debugging
     
@@ -42,20 +72,17 @@ module.exports = {
             throw err;
         }
     },
+    updateBorrowerBook: async (userId, book_id, updateFields) => {
+        const tableName = 'books_borrowed';
+        const filter = { user_id: userId, book_id: book_id };
+        const options = { populate: 'books' }; // Adjust 'books' to the correct related table name if needed
     
-    // findAllBorrowedBooks: async (userId, next) => {
-    //     try {
-    //         const tableName = 'books_borrowed';
-    //         const filter = { user_id: userId }; // Correctly specify column names
-    //         const borrowedBooks = await dbHelper.findAll(connection, tableName, filter, {populate: "book_id"});
-    
-    //         console.log(`List of borrowed book(s) found for user:`, borrowedBooks); // Log borrowedBook for debugging
-    
-    //         return borrowedBooks;
-    //     } catch (err) {
-    //         console.error('Error finding borrowed books by user:', err);
-    //         throw err;
-    //     }
-    // }
-    
-};
+        try {
+            const updatedBorrowedBook = await dbHelper.update(connection, tableName, filter, updateFields, options);
+            return updatedBorrowedBook;
+        } catch (err) {
+            console.error('Error updating borrower book:', err);
+            throw err;
+        }
+    }
+ };
