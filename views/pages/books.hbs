@@ -1,0 +1,36 @@
+<div class="row">
+    <h1>Books</h1>
+    <table class="table table-striped book-item">
+
+        <thead>
+            <tr>
+                <th class="sortable" data-column="book_id">Book ID</th>
+                <th class="sortable" data-column="book_name">Book Name</th>
+                <th class="sortable" data-column="author_name">Author</th>
+                <th class="sortable" data-column="genre">Genre</th>
+                <th class="sortable" data-column="publish_year">Year Published</th>
+                <th class="sortable" data-column="book_status">Book Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each books}}
+            <tr>
+                <td>{{this.book_id}}</td>
+                <td>{{this.book_name}}</td>
+                <td>{{this.author_name}}</td>
+                <td>{{this.genre}}</td>
+                <td>{{this.publish_year}}</td>
+                <td>{{this.book_status}}</td>
+                <td>
+                    <form method="post" action="/books/borrow/{{this.book_id}}">
+                        <button type"submit" class="btn btn-info">Check Out</button>
+                    </form>
+                </td>
+            </tr>
+
+            {{/each}}
+        </tbody>
+    </table>
+    </form>
+</div>
