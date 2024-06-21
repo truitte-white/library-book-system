@@ -1,6 +1,6 @@
 const { userService, borrowerService } = require("../services");
 const bcrypt = require("bcrypt");
-const { tokenHelper } = require("../helpers");
+const { tokenHelper, dbHelper } = require("../helpers");
 const { findAllBorrowedBooks } = require("../services/borrow.service");
 
 module.exports = {
@@ -23,7 +23,7 @@ module.exports = {
             next(err); // Assuming you're using Express, pass error to next middleware
         }
     },
-    
+
     // getProfile: async (req, res, next) => {
     //     const userId = req.userId;
     //     const allBorrowedBooks = await borrowerService.findAllBorrowedBooks(userId, next);
@@ -33,7 +33,7 @@ module.exports = {
 
     login: async (req, res, next) => {
         const { email, password } = req.body;
-    
+
         try {
             // Find user by email
             const user = await userService.findUserByEmail(email, next);
@@ -41,36 +41,36 @@ module.exports = {
                 res.locals.message = "User does not exist with this email.";
                 return res.redirect("/user/login");
             }
-    
+
             // Compare passwords
             const passwordMatch = await bcrypt.compare(password, user.password);
             if (!passwordMatch) {
                 res.locals.message = "Incorrect password.";
                 return res.redirect("/user/login");
             }
-    
+
             // Successful login
             const userId = user.user_id; // Assuming user_id is the correct property name
             console.log(`User ${user.email} logged in successfully.`);
-    
+
             // Sign token
             const token = await tokenHelper.sign({ userId }, next);
-    
+
             // Update user token in database
             user.token = token;
             await userService.updateUser(user, userId, next);
-    
+
             // Set cookie
             res.cookie("token", token, { httpOnly: true, maxAge: 1000 * 60 * 60 * 1 });
-    
+
             // Redirect to profile page
             return res.redirect("/user/profile");
         } catch (err) {
             console.error('Error in login:', err);
             next(err);
-    }
+        }
     },
-    
+
     signup: async (req, res, next) => {
         const { email, password } = req.body;
 
@@ -95,5 +95,10 @@ module.exports = {
             console.error('Error in signup:', err);
             next(err);
         }
+    },
+    logout: async (req, res, next) => {
+        res.cookie("token", "");
+        return res.redirect("/user/login");
+
     }
 };

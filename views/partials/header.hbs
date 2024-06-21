@@ -1,17 +1,22 @@
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" href="#">RF-SMART Conference Room Library System</a>
+      <a class="navbar-brand" href="/">RF-SMART Conference Room Library System</a>
     </div>
+    {{#if loggedIn}}
     <ul class="nav navbar-nav">
-      <li class="active"><a href="/">Home</a></li>
       <li><a href="/books">Book Status</a></li>
       <li><a href="/books/add-book">Add Books</a></li>
     </ul>
     <ul class="nav navbar-nav navbar-right">
       <li><a href="/user/profile"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+      <li><a href="/user/logout"><span class="glyphicon glyphicon-user"></span> Logout</a></li>
+    </ul>
+    {{else}}
+    <ul class="nav navbar-nav navbar-right">
       <li><a href="/user/signup"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
       <li><a href="/user/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
     </ul>
+    {{/if}}
   </div>
 </nav>
