@@ -18,10 +18,12 @@ module.exports = {
         }
     },
     updateBookStatus: async (book_id, status) => {
-        const sql = `UPDATE books SET book_status = ${connection.escape(status)} WHERE book_id = ${connection.escape(book_id)}`;
+        const sql = `UPDATE books SET book_status = ? WHERE book_id = ?`;
+        const values = [status, book_id];
+    
         try {
             const result = await new Promise((resolve, reject) => {
-                connection.query(sql, (err, rows) => {
+                connection.query(sql, values, (err, rows) => {
                     if (err) reject(err);
                     else resolve(rows);
                 });
@@ -75,14 +77,13 @@ module.exports = {
     updateBorrowerBook: async (userId, book_id, updateFields) => {
         const tableName = 'books_borrowed';
         const filter = { user_id: userId, book_id: book_id };
-        const options = { populate: 'books' }; // Adjust 'books' to the correct related table name if needed
-    
+
         try {
-            const updatedBorrowedBook = await dbHelper.update(connection, tableName, filter, updateFields, options);
-            return updatedBorrowedBook;
+            const result = await dbHelper.update(connection, tableName, updateFields, filter);
+            return result;
         } catch (err) {
             console.error('Error updating borrower book:', err);
             throw err;
         }
-    }
+    },
  };

@@ -111,8 +111,8 @@ module.exports = {
     },
     update: async (connection, tableName, updatedBody, filter) => {
         const fieldsToUpdate = Object.keys(updatedBody).map(field => `${field} = ?`).join(', ');
-        const sql = `UPDATE ${tableName} SET ${fieldsToUpdate} WHERE user_id = ?`;
-        const values = [...Object.values(updatedBody), filter.user_id];
+        const sql = `UPDATE ${tableName} SET ${fieldsToUpdate} WHERE user_id = ? AND book_id = ?`;
+        const values = [...Object.values(updatedBody), filter.user_id, filter.book_id];
 
         try {
             const result = await new Promise((resolve, reject) => {
@@ -121,7 +121,7 @@ module.exports = {
                     else resolve(res.affectedRows); // Return the number of affected rows
                 });
             });
-            return await result;
+            return result;
         } catch (err) {
             throw err;
         }

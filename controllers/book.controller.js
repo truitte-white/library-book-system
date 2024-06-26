@@ -1,4 +1,4 @@
-const { bookService, fineService, borrowerService, returnService } = require("../services");
+const { bookService, commentService, borrowerService, returnService } = require("../services");
 
 module.exports = {
     displayBooks: async (req, res, next) => {
@@ -12,6 +12,29 @@ module.exports = {
     },
     addBookForm: (req, res, next) => {
         res.render('form/add-book');
+    },
+    editBookForm: async (req, res, next) => {
+        try {
+            const { book_id } = req.params;
+            const userId = req.userId;
+    
+            console.log('UserId:', userId);
+            console.log('BookId:', book_id);
+    
+            const book = await bookService.findBookById(book_id);
+            if (!book) {
+                res.locals.message = "Book ID does not exist";
+                console.error('Book ID does not exist');
+                return res.redirect("/books");
+            }
+    
+            // Render the edit-book form with book details
+            res.render('form/edit-book', { book });
+    
+        } catch (err) {
+            console.error('Error:', err);
+            next(err);
+        }
     },
     addBook: async (req, res) => {
         console.log(req.body)
@@ -111,7 +134,7 @@ module.exports = {
     returnBook: async (req, res, next) => {
         const { book_id } = req.params;
         const userId = req.userId;
-
+    
         try {
             // Check if the book is borrowed by the user and is active
             const borrowedBook = await borrowerService.findBorrowedBookById(userId, book_id);
@@ -119,21 +142,46 @@ module.exports = {
                 res.locals.message = "Book is already returned or not borrowed by the user";
                 return res.redirect("/user/profile");
             }
-
-            // Update book_status to "Available" in the books table
-            // await bookService.updateBookStatus(book_id, 'Available');
-
+    
+            console.log('Before updating book status');
+            await borrowerService.updateBookStatus(book_id, 'Available');
+            console.log('After updating book status');
+    
             // Update return_date in books_borrowed table to current date
             const currentDate = new Date().toISOString().slice(0, 19).replace('T', ' '); // Current date in MySQL format
+            console.log('Before updating borrower book');
             await borrowerService.updateBorrowerBook(userId, book_id, { active: false, return_date: currentDate });
-
-            await bookService.updateBookStatus(book_id, 'Available');
-
+            console.log('After updating borrower book');
+    
             res.locals.message = "Book returned successfully";
             return res.redirect("/user/profile");
         } catch (err) {
             console.error('Error returning book:', err);
             next(err); // Pass the error to the next error-handling middleware
+        }
+    },
+
+    editBook: async (req, res, next) => {
+        try {
+            const { book_id } = req.params;
+            const { book_status } = req.body; // Assuming you have a field named 'book_status' in your form
+
+            console.log('UserId:', req.userId);
+            console.log('BookId:', book_id);
+            console.log('New Book Status:', book_status);
+
+            // Update the book status using bookService or similar
+            const updatedBook = await bookService.updateBookStatus(book_id, book_status);
+
+            // Handle the updatedBook response as needed
+            console.log('Updated Book:', updatedBook);
+
+            // Redirect or render success message
+            res.redirect('/books'); // Example redirect after update
+
+        } catch (err) {
+            console.error('Error updating book status:', err);
+            next(err);
         }
     }
 

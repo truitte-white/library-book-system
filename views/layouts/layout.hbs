@@ -8,9 +8,12 @@
   </head>
   <body>
     {{> header }}
-
+    
+    {{#if message}}
+      <h4>{{message}}</h4>
+    {{/if}}
     <div class="container">
-      {{{body}}}
+        {{{body}}}
     </div>
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>

@@ -1,13 +1,13 @@
 const bookService = require("./book.service");
 const userService = require("./user.service");
-const fineService = require("./fine.service");
+const commentService = require("./comment.service");
 const borrowerService = require("./borrow.service");
 const returnService = require("./return.service");
 
 module.exports = {
     bookService,
     userService,
-    fineService,
+    commentService,
     borrowerService,
     returnService 
 }

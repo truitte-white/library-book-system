@@ -1,8 +1,8 @@
 body {
-    background-image: url("https://my.chartered.college/wp-content/uploads/2021/10/martin-adams-1062002-unsplash.jpg");
+    background-image: url("https://wallpapers.com/images/hd/library-background-hgd4xlhw1tk49yyf.jpg");
 }
 .book-item {
-    padding: 5px;
+    padding: 3px;
     text-align: left;
     margin-bottom: 5px;
     background-color: aliceblue;
@@ -10,5 +10,12 @@ body {
 
 form {
     background-color: aliceblue;
-    padding: 10px
+    padding: 5px
 }
+
+.btn-group form {
+    display: inline-block; 
+    margin-right: 10px; 
+}
+
+

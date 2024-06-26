@@ -1,8 +1,9 @@
 <div class="col-sm-6 col-md-6 col-sm-offset-3">
-    <div style="background-color: aliceblue; padding: 10px;">
-        <h2>Add Book</h2>
-    </div>
-    <form action="/books/add-book" method="post" style="background-color: white; padding: 20px; border: 1px solid #ccc;">
+    <form action="/books/edit-book" method="post">
+        <div class="form-group">
+            <label for="book_id">Book ID:</label>
+            <input type="text" name="book_id" class="form-control" id="book_id">
+        </div>
         <div class="form-group">
             <label for="book_name">Book Name:</label>
             <input type="text" name="book_name" class="form-control" id="book_name">
@@ -19,6 +20,15 @@
             <label for="publish_year">Book Published Year:</label>
             <input type="text" name="publish_year" class="form-control" id="publish_year">
         </div>
-        <button type="submit" class="btn btn-default btn-primary">Add Book</button>
+        <div class="form-group">
+            <label for="book_status">Book Status:</label>
+            <select name="book_status">
+                <option value="Available">Available</option>
+                <option value="Checked Out">Checked Out</option>
+                <option value="Destroyed">Destroyed</option>
+                <option value="Lost">Lost</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-default btn-primary">Edit Book</button>
     </form>
 </div>

@@ -1,16 +1,20 @@
+<div id="library-system" class="jumbotron text-center">
+    <h1>RF-SMART Library Book System</h1>
+</div>
+
 <div class="row">
-    <h1 style="color: white">Books</h1>
-    <table class="table table-striped book-item">
+    <h1 id="books-heading" style="color: white">Books</h1>
+    <table id="books-table" class="table table-striped book-item">
 
         <thead>
             <tr>
-                <th class="sortable" data-column="book_id">Book ID</th>
-                <th class="sortable" data-column="book_name">Book Name</th>
-                <th class="sortable" data-column="author_name">Author</th>
-                <th class="sortable" data-column="genre">Genre</th>
-                <th class="sortable" data-column="publish_year">Year Published</th>
-                <th class="sortable" data-column="book_status">Book Status</th>
-                <th>Action</th>
+                <th id="book-id-header" class="sortable" data-column="book_id">Book ID</th>
+                <th id="book-name-header" class="sortable" data-column="book_name">Book Name</th>
+                <th id="author-name-header" class="sortable" data-column="author_name">Author</th>
+                <th id="genre-header" class="sortable" data-column="genre">Genre</th>
+                <th id="publish-year-header" class="sortable" data-column="publish_year">Year Published</th>
+                <th id="book-status-header" class="sortable" data-column="book_status">Book Status</th>
+                <th id="action-header">Action</th>
             </tr>
         </thead>
         <tbody>
@@ -23,18 +27,22 @@
                 <td>{{this.publish_year}}</td>
                 <td>{{this.book_status}}</td>
                 <td>
-                    <form method="post" action="/books/borrow/{{this.book_id}}">
-                        <button type"submit" class="btn btn-info">Check Out</button>
-                    </form>
-                    
-                    <form method="post" action="/books/borrow/{{this.book_status}}">
-                        <button type"submit" class="btn btn-info">Update Status</button>
-                    </form>
+                    <div class="btn-group" role="group">
+                        <form id="borrow-form-{{this.book_id}}" method="post" action="/books/borrow/{{this.book_id}}">
+                            <button type="submit" class="btn btn-info">Check Out</button>
+                        </form>
+
+                        <form id="edit-form-{{this.book_id}}" method="post" action="/books/edit-book/{{this.book_id}}">
+                            <button type="submit" class="btn btn-info">Update Status</button>
+                        </form>
+
+                        <form id="comment-form-{{this.book_id}}" method="post" action="/books/add-comment/{{this.book_id}}">
+                            <button type="submit" class="btn btn-info">Add Comment</button>
+                        </form>
+                    </div>
                 </td>
             </tr>
-
             {{/each}}
         </tbody>
     </table>
-    </form>
 </div>

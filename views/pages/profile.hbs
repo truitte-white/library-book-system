@@ -18,3 +18,54 @@
         {{/if}}
     </div>
 </div>
+
+
+
+{{!-- <%- include('includes/header') %>
+
+<div class="container py-md-5 container--narrow">
+  <%- include('includes/flash') %>
+  {{#if posts.length}}
+    <h2 class="text-center mb-4">The Latest From Those You Follow</h2>
+    <div class="list-group">
+      {{#each posts}}
+        <a href="/post/{{this._id}}" class="list-group-item list-group-item-action">
+          <img class="avatar-tiny" src="{{this.avatar}}" />
+          <strong>{{this.title}}</strong>
+          <span class="text-muted small">by {{this.username}} on {{this.createdDate.getMonth() + 1}}/{{this.createdDate.getDate()}}/{{this.createdDate.getFullYear()}}</span>
+        </a>
+      {{/each}}
+    </div>
+  {{else}}
+    <div class="text-center">
+      <h2>Hello <strong>{{user.username}}</strong>, your feed is empty.</h2>
+      <p class="lead text-muted">Your feed displays the latest posts from the people you follow. If you don't have any friends to follow, that's okay; you can use the "Search" feature in the top menu bar to find content written by people with similar interests and then follow them.</p>
+    </div>
+  {{/if}}
+</div>
+
+<%- include('includes/footer') %> --}}
+
+
+{{!-- <h2>
+  <img class="avatar-small" src="{{profileAvatar}}"> {{profileUsername}}
+  {{#if user && !isVisitorsProfile}}
+    {{#if isFollowing}}
+      <form class="ml-2 d-inline" action="/removeFollow/{{profileUsername}}" method="POST">
+        <input type="hidden" name="_csrf" value="{{csrfToken}}">
+        <button class="btn btn-danger btn-sm">Stop Following <i class="fas fa-user-times"></i></button>
+      </form>
+    {{else}}
+      <form class="ml-2 d-inline" action="/addFollow/{{profileUsername}}" method="POST">
+        <input type="hidden" name="_csrf" value="{{csrfToken}}">
+        <button class="btn btn-primary btn-sm">Follow <i class="fas fa-user-plus"></i></button>
+      </form>
+    {{/if}}
+  {{/if}}
+</h2>
+
+<div class="profile-nav nav nav-tabs pt-2 mb-4">
+  <a href="/profile/{{profileUsername}}" class="profile-nav-link nav-item nav-link {{#if_eq currentPage 'posts'}}active{{/if_eq}}">Posts: {{counts.postCount}}</a>
+  <a href="/profile/{{profileUsername}}/followers" class="profile-nav-link nav-item nav-link {{#if_eq currentPage 'followers'}}active{{/if_eq}}">Followers: {{counts.followerCount}}</a>
+  <a href="/profile/{{profileUsername}}/following" class="profile-nav-link nav-item nav-link {{#if_eq currentPage 'following'}}active{{/if_eq}}">Following: {{counts.followingCount}}</a>
+</div> --}}
