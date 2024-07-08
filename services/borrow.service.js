@@ -33,17 +33,6 @@ module.exports = {
             throw err;
         }
     },
-    // borrowBook: async (body, next) => {
-    //     try {
-    //         console.log(body);
-    //         const tableName = 'books_borrowed';
-    //         const borrower = await dbHelper.create(connection, tableName, body, next);
-    //         return borrower;
-    //     } catch (err) {
-    //         console.error('Error creating borrower:', err);
-    //         throw err;
-    //     }
-    // },
     findBorrowedBookById: async (userId, book_id, next) => {
         try {
             const tableName = 'books_borrowed';

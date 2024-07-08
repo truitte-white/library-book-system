@@ -3,12 +3,12 @@ const { dbHelper } = require("../helpers");
 const userService = require("./user.service");
 
 module.exports = {
-  Post: (data, userid, requestedPostId) => {
+  Post: (data, UserId, requestedCommentId) => {
     return {
       data,
       errors: [],
-      userid,
-      requestedPostId
+      UserId,
+      requestedCommentId
     };
   },
 
@@ -36,7 +36,7 @@ module.exports = {
       title: sanitizeHTML(this.data.title.trim(), { allowedTags: [], allowedAttributes: {} }),
       body: sanitizeHTML(this.data.body.trim(), { allowedTags: [], allowedAttributes: {} }),
       createdDate: fullDate,
-      author: this.userid
+      author: this.UserId
     };
   },
 
@@ -45,7 +45,7 @@ module.exports = {
       this.errors.push("You must provide a title.");
     }
     if (this.data.body == "") {
-      this.errors.push("You must provide post content.");
+      this.errors.push("You must provide comment content.");
     }
   },
 
@@ -61,10 +61,10 @@ module.exports = {
           author: this.data.author
         };
         /*===============================================
-        Task #1 CREATE A POST
+        Task #1 CREATE A COMMENT
         You'll need: incoming.title, incoming.body, incoming.author, and incoming.createdDate
         ===============================================*/
-        const [{ insertId }] = await db.execute("INSERT INTO posts (title, body, author, createdDate) VALUES(?, ?, ?, ?)", [incoming.title, incoming.body, incoming.author, incoming.createdDate]);
+        const [{ insertId }] = await db.execute("INSERT INTO bookscomments (title, body, author, createdDate) VALUES(?, ?, ?, ?)", [incoming.title, incoming.body, incoming.author, incoming.createdDate]);
         resolve(insertId);
       } else {
         reject(this.errors);
@@ -75,8 +75,8 @@ module.exports = {
   update: function () {
     return new Promise(async (resolve, reject) => {
       try {
-        let post = await this.findSingleById(this.requestedPostId, this.userid);
-        if (post.isVisitorOwner) {
+        let comment = await this.findSingleById(this.requestedcommentId, this.UserId);
+        if (comment.isVisitorOwner) {
           // actually update the db
           let status = await this.actuallyUpdate();
           resolve(status);
@@ -97,13 +97,13 @@ module.exports = {
         const incoming = {
           title: this.data.title,
           body: this.data.body,
-          requestedPostId: this.requestedPostId
+          requestedCommentId: this.requestedCommentIdd
         };
         /*===============================================
-        Task #2 UPDATE AN EXISTING POST
-        You'll need: incoming.title, incoming.body, incoming.requestedPostId
+        Task #2 UPDATE AN EXISTING COMMENT
+        You'll need: incoming.title, incoming.body, incoming.requestedCommentId
         ===============================================*/
-        await db.execute("UPDATE posts SET title = ?, body = ? WHERE _id = ?", [incoming.title, incoming.body, incoming.requestedPostId]);
+        await db.execute("UPDATE bookscomments SET title = ?, body = ? WHERE _id = ?", [incoming.title, incoming.body, incoming.requestedCommentId]);
         resolve("success");
       } else {
         resolve("failure");
@@ -114,14 +114,14 @@ module.exports = {
   findSingleById: async (id, visitorId = 0) => {
     return new Promise(async (resolve, reject) => {
       /*===============================================
-      Task #3 FIND ONE POST BY ID
+      Task #3 FIND ONE COMMENT BY ID
       You'll need: id
       ===============================================*/
-      let [[post]] = await db.execute("SELECT p.title, p.body, p._id, p.author, p.createdDate, u.username, u.avatar FROM posts p JOIN users u ON p.author = u._id WHERE p._id = ?", [id]);
+      let [[comment]] = await db.execute("SELECT p.title, p.body, p._id, p.author, p.createdDate, u.username, u.avatar FROM bookscomments p JOIN users u ON p.author = u._id WHERE p._id = ?", [id]);
 
-      if (post) {
-        post.isVisitorOwner = post.author == visitorId;
-        resolve(post);
+      if (comment) {
+        comment.isVisitorOwner = comment.author == visitorId;
+        resolve(comment);
       } else {
         reject();
       }
@@ -130,34 +130,34 @@ module.exports = {
 
   findByAuthorId: async (authorId) => {
     /*===============================================
-    Task #4 FIND ALL POSTS BY AUTHOR ID
+    Task #4 FIND ALL COMMENTS BY AUTHOR ID
     You'll need: authorId
     ===============================================*/
-    let [posts] = await db.execute("SELECT p.title, p.body, p._id, p.author, p.createdDate, u.username, u.avatar FROM posts p JOIN users u ON p.author = u._id WHERE p.author = ? ORDER BY createdDate DESC", [authorId]);
-    return posts;
+    let [comments] = await db.execute("SELECT p.title, p.body, p._id, p.author, p.createdDate, u.username, u.avatar FROM bookscomments p JOIN users u ON p.author = u._id WHERE p.author = ? ORDER BY createdDate DESC", [authorId]);
+    return comments;
   },
 
   countCommentsByAuthor: async (id) => {
     return new Promise(async (resolve, reject) => {
       /*===============================================
-      Task #5 COUNT HOW MANY POSTS A USER HAS CREATED
+      Task #5 COUNT HOW MANY COMMENTS A USER HAS CREATED
       You'll need: id
       ===============================================*/
-      const [[{ posts }]] = await db.execute("SELECT count(_id) as posts FROM posts WHERE author = ?", [id]);
-      resolve(posts);
+      const [[{ comments }]] = await db.execute("SELECT count(_id) as comments FROM bookscomments WHERE author = ?", [id]);
+      resolve(comments);
     });
   },
 
-  deleteComment: async (postIdToDelete, currentUserId) => {
+  deleteComment: async (commentIdToDelete, currentUserId) => {
     return new Promise(async (resolve, reject) => {
       try {
-        let post = await this.findSingleById(postIdToDelete, currentUserId);
-        if (post.isVisitorOwner) {
+        let comment = await this.findSingleById(commentIdToDelete, currentUserId);
+        if (comment.isVisitorOwner) {
           /*===============================================
-          Task #6 DELETE ONE POST BY ID,
-          You'll need: postIdToDelete
+          Task #6 DELETE ONE COMMENT BY ID,
+          You'll need: commentIdToDelete
           ===============================================*/
-          await db.execute("DELETE FROM posts WHERE _id = ?", [postIdToDelete]);
+          await db.execute("DELETE FROM bookscomments WHERE _id = ?", [commentIdToDelete]);
           resolve();
         } else {
           reject();
@@ -172,11 +172,11 @@ module.exports = {
     return new Promise(async (resolve, reject) => {
       if (typeof searchTerm == "string") {
         /*===============================================
-        Task #7 SEARCH FOR POSTS BY KEYWORD OR PHRASE
+        Task #7 SEARCH FOR COMMENTS BY KEYWORD OR PHRASE
         You'll need: searchTerm
         ===============================================*/
-        let [posts] = await db.execute("SELECT p.title, p.body, p._id, p.author, p.createdDate, u.username, u.avatar FROM posts p JOIN users u ON p.author = u._id WHERE MATCH(title, body) AGAINST(?)", [searchTerm]);
-        resolve(posts);
+        let [comments] = await db.execute("SELECT p.title, p.body, p._id, p.author, p.createdDate, u.username, u.avatar FROM bookscomments p JOIN users u ON p.author = u._id WHERE MATCH(title, body) AGAINST(?)", [searchTerm]);
+        resolve(comments);
       } else {
         reject();
       }
@@ -185,12 +185,12 @@ module.exports = {
 
   getCommentFeed: async (id) => {
     /*===============================================
-    Task #8 GET POSTS FROM USERS YOU FOLLOW
+    Task #8 GET COMMENTS FROM USERS YOU FOLLOW
     You'll need: id
     ===============================================*/
-    let [posts] = await db.execute("SELECT posts._id, title, createdDate, username, avatar FROM posts JOIN users ON posts.author = users._id WHERE author IN (SELECT followedId FROM follows WHERE authorId = ?) ORDER BY createdDate DESC", [id]);
+    let [comments] = await db.execute("SELECT bookscomments._id, title, createdDate, username, avatar FROM bookscomments JOIN users ON bookscomments.UserId  = users._id WHERE author IN (SELECT followedId FROM follows WHERE authorId = ?) ORDER BY createdDate DESC", [id]);
 
-    // Return 'posts' instead of [] once you've actually written your query.
-    return posts;
+    // Return 'comments' instead of [] once you've actually written your query.
+    return comments;
   }
 };
