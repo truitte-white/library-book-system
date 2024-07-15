@@ -43,15 +43,15 @@ module.exports = {
             }
 
             // Compare passwords
-            const passwordMatch = await bcrypt.compare(password, user.password);
+            const passwordMatch = await bcrypt.compare(password, user.Password);
             if (!passwordMatch) {
                 res.locals.message = "Incorrect password.";
                 return res.redirect("/user/login");
             }
 
             // Successful login
-            const userId = user.user_id; // Assuming user_id is the correct property name
-            console.log(`User ${user.email} logged in successfully.`);
+            const userId = user.UserId; // Assuming userid is the correct property name
+            console.log(`User ${user.Email} logged in successfully.`);
 
             // Sign token
             const token = await tokenHelper.sign({ userId }, next);

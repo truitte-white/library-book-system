@@ -1,6 +1,6 @@
 <div class="container">
     <div class="jumbotron">
-        <h3>Hello {{user.firstname}}</h3>
+        <h3>Hello {{user.FirstName}}</h3>
     </div>
     <div class="profile-book-section">
         {{#if books}}
@@ -8,8 +8,8 @@
         <ul class="list-group">
             {{#each books}}
             <li class="list-group-item">
-                {{this.book_name}} {{this.borrow_date}}
-                <form action="/books/return/{{this.book_id}}" method="POST">
+                {{this.BookName}} {{this.BorrowDate}}
+                <form action="/books/return/{{this.BookId}}" method="POST">
                     <button type="submit" class="btn btn-info">Return</button>
                 </form>
             </li>

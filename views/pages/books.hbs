@@ -8,35 +8,39 @@
 
         <thead>
             <tr>
-                <th id="book-id-header" class="sortable" data-column="book_id">Book ID</th>
-                <th id="book-name-header" class="sortable" data-column="book_name">Book Name</th>
-                <th id="author-name-header" class="sortable" data-column="author_name">Author</th>
-                <th id="genre-header" class="sortable" data-column="genre">Genre</th>
-                <th id="publish-year-header" class="sortable" data-column="publish_year">Year Published</th>
-                <th id="book-status-header" class="sortable" data-column="book_status">Book Status</th>
+                <th id="book-id-header" class="sortable" data-column="BookId">Book ID</th>
+                <th id="book-name-header" class="sortable" data-column="bookname">Book Name</th>
+                <th id="author-name-header" class="sortable" data-column="AuthorName">Author</th>
+                <th id="Genre-header" class="sortable" data-column="Genre">Genre</th>
+                <th id="publish-year-header" class="sortable" data-column="PublishYear">Year Published</th>
+                <th id="book-status-header" class="sortable" data-column="BookStatus">Book Status</th>
                 <th id="action-header">Action</th>
             </tr>
         </thead>
         <tbody>
             {{#each books}}
             <tr>
-                <td>{{this.book_id}}</td>
-                <td>{{this.book_name}}</td>
-                <td>{{this.author_name}}</td>
-                <td>{{this.genre}}</td>
-                <td>{{this.publish_year}}</td>
-                <td>{{this.book_status}}</td>
+                <td>{{this.BookId}}</td>
+                <td>{{this.BookName}}</td>
+                <td>{{this.AuthorName}}</td>
+                <td>{{this.Genre}}</td>
+                <td>{{this.PublishYear}}</td>
+                <td>{{this.BookStatus}}</td>
                 <td>
                     <div class="btn-group" role="group">
-                        <form id="borrow-form-{{this.book_id}}" method="post" action="/books/borrow/{{this.book_id}}">
+                        <form id="borrow-form-{{this.BookId}}" method="post" action="/books/borrow/{{this.BookId}}">
                             <button type="submit" class="btn btn-info">Check Out</button>
                         </form>
 
-                        <form id="edit-form-{{this.book_id}}" method="post" action="/books/edit-book/{{this.book_id}}">
+                        <form id="edit-form-{{this.BookId}}" method="post" action="/books/edit-book/{{this.BookId}}">
+                            <input type="hidden" name="BookId" value="{{this.BookId}}">
+                            <input type="hidden" name="BookStatus" value="{{this.BookStatus}}">
+                            <!-- Replace with dynamic value if needed -->
                             <button type="submit" class="btn btn-info">Update Status</button>
                         </form>
 
-                        <form id="comment-form-{{this.book_id}}" method="post" action="/books/add-comment/{{this.book_id}}">
+                        <form id="comment-form-{{this.BookId}}" method="post"
+                            action="/books/add-comment/{{this.BookId}}">
                             <button type="submit" class="btn btn-info">Add Comment</button>
                         </form>
                     </div>

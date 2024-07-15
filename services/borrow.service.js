@@ -5,11 +5,11 @@ module.exports = {
     borrowBook: async (body, next) => {
         try {
             console.log(body);
-            const tableName = 'books_borrowed';
+            const tableName = 'booksborrowed';
             const borrower = await dbHelper.create(connection, tableName, body, next);
     
             // Update book status in the books table
-            await module.exports.updateBookStatus(body.book_id, 'Checked Out');
+            await module.exports.updateBookStatus(body.BookId, 'Checked Out');
     
             return borrower;
         } catch (err) {
@@ -17,9 +17,9 @@ module.exports = {
             throw err;
         }
     },
-    updateBookStatus: async (book_id, status) => {
-        const sql = `UPDATE books SET book_status = ? WHERE book_id = ?`;
-        const values = [status, book_id];
+    updateBookStatus: async (BookId, status) => {
+        const sql = `UPDATE books SET BookStatus = ? WHERE BookId = ?`;
+        const values = [status, BookId];
     
         try {
             const result = await new Promise((resolve, reject) => {
@@ -33,10 +33,10 @@ module.exports = {
             throw err;
         }
     },
-    findBorrowedBookById: async (userId, book_id, next) => {
+    findBorrowedBookById: async (userId, BookId, next) => {
         try {
-            const tableName = 'books_borrowed';
-            const filter = { user_id: userId, book_id: book_id };
+            const tableName = 'booksborrowed';
+            const filter = { userId: userId, BookId: BookId };
             const options = { populate: 'books' } 
             const borrowedBook = await dbHelper.findOne(connection, tableName, filter, options);
     
@@ -50,8 +50,8 @@ module.exports = {
     },
     findAllBorrowedBooks: async (userId, next) => {
         try {
-            const tableName = 'books_borrowed';
-            const filter = { user_id: userId };
+            const tableName = 'booksborrowed';
+            const filter = { userId: userId };
             const options = { populate: 'books' }; // Assuming 'books' is the correct related table name
     
             const borrowedBooks = await dbHelper.findAll(connection, tableName, filter, options);
@@ -63,9 +63,9 @@ module.exports = {
             throw err;
         }
     },
-    updateBorrowerBook: async (userId, book_id, updateFields) => {
-        const tableName = 'books_borrowed';
-        const filter = { user_id: userId, book_id: book_id };
+    updateBorrowerBook: async (userId, BookId, updateFields) => {
+        const tableName = 'booksborrowed';
+        const filter = { userId: userId, BookId: BookId };
 
         try {
             const result = await dbHelper.update(connection, tableName, updateFields, filter);

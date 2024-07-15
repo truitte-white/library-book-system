@@ -15,9 +15,9 @@ module.exports = {
 
     addBook: async (bookData) => {
         try {
-            const { book_name, author_name, genre, publish_year } = bookData;
+            const { BookName, AuthorName, Genre, PublishYear } = bookData;
             const tableName = 'books';
-            const body = { book_name, author_name, genre, publish_year };
+            const body = { BookName, AuthorName, Genre, PublishYear };
 
             // Insert the book into the database
             const insertId = await dbHelper.create(connection, tableName, body);
@@ -30,23 +30,23 @@ module.exports = {
             throw err;
         }
     },
-    findBookById: async (book_id, next) => {
+    findBookById: async (BookId, next) => {
         try {
             const tableName = 'books';
-            const filter = { book_id: book_id }; // Assuming 'id' is the primary key column name
+            const filter = { BookId: BookId }; // Assuming 'id' is the primary key column name
             const book = await dbHelper.findOne(connection, tableName, filter);
-            console.log(`Book found: ${book.book_name} for ID: ${book_id}`);
+            console.log(`Book found: ${book.BookName} for ID: ${BookId}`);
             return book;
         } catch (err) {
             console.error('Error getting book by ID:', err);
             throw err;
         }
     },
-    updateBookStatus: async (userId, book_id, newStatus) => {
+    updateBookStatus: async (BookId, BookStatus) => {
         try {
             const tableName = 'books';
-            const filter = { user_id: userId, book_id: book_id };
-            const updatedFields = { book_status: 'Available' }; // Update book_status field
+            const filter = { BookId: BookId }; // Assuming 'BookId' is the primary key column name
+            const updatedFields = { BookStatus: BookStatus };
 
             const numRowsAffected = await dbHelper.update(connection, tableName, updatedFields, filter);
 
@@ -55,7 +55,7 @@ module.exports = {
                 const updatedBook = await dbHelper.findOne(connection, tableName, filter);
                 return updatedBook;
             } else {
-                throw new Error(`Failed to update book with ID ${book_id}`);
+                throw new Error(`Failed to update book with ID ${BookId}`);
             }
         } catch (err) {
             throw err;

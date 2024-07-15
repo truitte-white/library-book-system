@@ -4,7 +4,7 @@ module.exports = {
     findOne: async (connection, tableName, filter = {}, options = {}) => {
         try {
             // Construct WHERE clause based on filter object
-            const conditions = Object.keys(filter).map(key => `${key === 'userId' ? 'user_id' : key} = ${connection.escape(filter[key])}`).join(' AND ');
+            const conditions = Object.keys(filter).map(key => `${key === 'userId' ? 'userId' : key} = ${connection.escape(filter[key])}`).join(' AND ');
             const whereClause = conditions ? ` WHERE ${conditions}` : '';
             const sql = `SELECT * FROM ${tableName}${whereClause}`;
     
@@ -37,10 +37,10 @@ module.exports = {
         
         let sql = `SELECT * FROM ${tableName}`;
         if (joinTable) {
-            sql += ` INNER JOIN ${joinTable} ON ${tableName}.book_id = ${joinTable}.book_id`; // Adjusted join condition
+            sql += ` INNER JOIN ${joinTable} ON ${tableName}.BookId = ${joinTable}.BookId`; // Adjusted join condition
         }
     
-        const conditions = Object.keys(filter).map(key => `${key === 'userId' ? 'user_id' : key} = ${connection.escape(filter[key])}`).join(' AND ');
+        const conditions = Object.keys(filter).map(key => `${key === 'userId' ? 'userId' : key} = ${connection.escape(filter[key])}`).join(' AND ');
         const whereClause = conditions ? ` WHERE ${conditions}` : '';
         sql += whereClause;
     
@@ -111,9 +111,20 @@ module.exports = {
     },
     update: async (connection, tableName, updatedBody, filter) => {
         const fieldsToUpdate = Object.keys(updatedBody).map(field => `${field} = ?`).join(', ');
-        const sql = `UPDATE ${tableName} SET ${fieldsToUpdate} WHERE user_id = ? AND book_id = ?`;
-        const values = [...Object.values(updatedBody), filter.user_id, filter.book_id];
-
+    
+        let sql;
+        let values;
+    
+        if (filter.userId !== undefined && filter.BookId !== undefined) {
+            sql = `UPDATE ${tableName} SET ${fieldsToUpdate} WHERE userId = ? AND BookId = ?`;
+            values = [...Object.values(updatedBody), filter.userId, filter.BookId];
+        } else {
+            // Handle the case where userId is not present in the filter
+            const conditions = Object.keys(filter).map(key => `${key} = ?`).join(' AND ');
+            sql = `UPDATE ${tableName} SET ${fieldsToUpdate} WHERE ${conditions}`;
+            values = [...Object.values(updatedBody), ...Object.values(filter)];
+        }
+    
         try {
             const result = await new Promise((resolve, reject) => {
                 connection.query(sql, values, (err, res) => {

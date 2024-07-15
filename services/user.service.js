@@ -26,13 +26,13 @@ module.exports = {
     },
     createUser: async (userData) => {
         try {
-            const { firstname, lastname, email, password, token, join_date } = userData;
+            const { firstname, lastname, email, password, token, joindate } = userData;
             const tableName = 'users';
-            const body = { firstname, lastname, email, password, token, join_date };
+            const body = { firstname, lastname, email, password, token, joindate };
 
-            // Validate join_date format
-            if (!isValidDate(join_date)) {
-                throw new Error('Invalid date format for join_date. Please use date format (YYYY-MM-DD)');
+            // Validate joindate format
+            if (!isValidDate(joindate)) {
+                throw new Error('Invalid date format for joindate. Please use date format (YYYY-MM-DD)');
             }
 
             // Insert the user into the database
@@ -51,21 +51,21 @@ module.exports = {
             return regexDate.test(dateString);
         }
     },
-    updateUser: async (updatedBody, userId, next) => {
+    updateUser: async (updatedBody, UserId, next) => {
         try {
             const query = `
                 UPDATE users
-                SET firstname = ?, lastname = ?, email = ?, password = ?, token = ?, join_date = ?
-                WHERE user_id = ?
+                SET FirstName = ?, LastName = ?, Email = ?, Password = ?, Token = ?, JoinDate = ?
+                WHERE UserId = ?
             `;
             const values = [
-                updatedBody.firstname || null,
-                updatedBody.lastname,
-                updatedBody.email,
-                updatedBody.password,
-                updatedBody.token,
-                updatedBody.join_date,
-                userId  // Pass userId here
+                updatedBody.FirstName,
+                updatedBody.LastName,
+                updatedBody.Email,
+                updatedBody.Password,
+                updatedBody.Token,
+                updatedBody.JoinDate,
+                UserId  // Pass userId here
             ];
 
             const result = await new Promise((resolve, reject) => {
@@ -75,10 +75,10 @@ module.exports = {
                 });
             });
 
-            console.log(`User with ID ${userId} updated successfully.`);
+            console.log(`User with ID ${UserId} updated successfully.`);
             return result;
         } catch (err) {
-            console.error(`Error updating user with ID ${userId}: ${err.stack}`);
+            console.error(`Error updating user with ID ${UserId}: ${err.stack}`);
             throw err;
         }
     },
